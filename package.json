@@ -1,0 +1,16 @@
+{
+  "name": "rest-server",
+  "version": "1.0.0",
+  "description": "rest server curso de node",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Urra Matias",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^14.2.0",
+    "express": "^4.17.2"
+  }
+}
