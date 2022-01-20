@@ -10,8 +10,12 @@ const usersGet = (req,res = response) =>{
 
 }
 const usersPost = (req,res = response) =>{
+
+    const body = req.body;
+
     res.json({
-        msg:'post API - controller'
+        msg:'post API - controller',
+        bdoy
     })
 
 }
