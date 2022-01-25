@@ -4,7 +4,7 @@ const{ response } = require('express')
 
 
 const usersGet = (req,res = response) =>{
-    const params = req.query;
+    const {q,nombre,apikey} = req.query;
     res.json({
         msg:'get API - controller',
         params:params
