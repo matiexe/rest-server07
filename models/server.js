@@ -13,11 +13,13 @@ class Server{
         //Conexion base de datos
         this.conexionDB();
 
+        //middlewares
+        this.middlewares();
+
         //rutas
         this.routes();
         
-        //middlewares
-        this.middlewares();
+        
 
 
     }
@@ -29,7 +31,7 @@ class Server{
 
         this.app.use(cors());
         //Lectura y parseo del body
-        this.app.use(express.json());
+        this.app.use(express.json())
         this.app.use(express.static('public'));
 
     }

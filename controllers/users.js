@@ -1,23 +1,42 @@
 //users.controller
 
-const{ response } = require('express')
+const {response} = require('express')
+
+const bcrypt = require('bcryptjs')
+
+
+const Usuario = require('../models/usuario');
+
 
 
 const usersGet = (req,res = response) =>{
     const {q,nombre,apikey} = req.query;
     res.json({
         msg:'get API - controller',
-        params:params
     })
 
 }
-const usersPost = (req,res = response) =>{
-
-    const body = req.body;
+const usersPost = async(req ,res = response) =>{
+    
+    const {nombre , correo, password, rol} = req.body;
+    const usuario = new Usuario({nombre,correo,password,rol});
+    //verificar si el correo existe
+    const exisCorreo = await Usuario.findOne({correo});
+    if(exisCorreo){
+        return res.status(400).json({
+            msg:"Correo registrado"
+        })
+    }
+    
+    //Encriptar
+    const salt = bcrypt.genSaltSync();
+    usuario.password = bcrypt.hashSync(password,salt)
+    //Guardar en bd
+    await usuario.save()
 
     res.json({
         msg:'post API - controller',
-        bdoy
+        usuario
     })
 
 }
