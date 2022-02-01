@@ -21,12 +21,13 @@ const usersPost = async(req ,res = response) =>{
     const {nombre , correo, password, rol} = req.body;
     const usuario = new Usuario({nombre,correo,password,rol});
     //verificar si el correo existe
-    const exisCorreo = await Usuario.findOne({correo});
+    /*const exisCorreo = await Usuario.findOne({correo});
     if(exisCorreo){
         return res.status(400).json({
             msg:"Correo registrado"
         })
-    }
+    }*/
+
     
     //Encriptar
     const salt = bcrypt.genSaltSync();
@@ -41,10 +42,17 @@ const usersPost = async(req ,res = response) =>{
 
 }
 
-const usersPut = (req,res = response) =>{
+const usersPut = async (req,res = response) =>{
     const id = req.params.id;
+    const {_id,password, google,correo, ...resto} = req.body;
+
+    // validar contra base de datos
+    if(password){
+        const salt = bcrypt.genSaltSync();
+        resto.password = bcrypt.hashSync(password,salt)
+    }
     
-    
+    const usuariodb =  await Usuario.findByIdAndUpdate(id,resto);
     res.json({
         msg:'put API - controller',
         id:id
