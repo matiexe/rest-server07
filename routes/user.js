@@ -11,7 +11,12 @@ const { validarCampos } = require('../middlewares/validar-campos');
 const router = Router();
 
 router.get('/',usersGet)
-router.delete('/:id',usersDelete)
+router.delete('/:id',[
+
+    check('id', 'No es un id valido').isMongoId(),
+    
+    validarCampos
+],usersDelete)
 router.put('/:id',[
     check('id','No es un id valido').isMongoId(),
     check('id').custom(esUsuarioId),
