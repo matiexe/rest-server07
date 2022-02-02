@@ -9,10 +9,13 @@ const Usuario = require('../models/usuario');
 
 
 
-const usersGet = (req,res = response) =>{
-    const {q,nombre,apikey} = req.query;
+const usersGet = async(req,res = response) =>{
+    const { limite = 5, desde = 0} = req.query;
+    const usuarios = await Usuario.find()
+    .skip(Number(desde))
+    .limit(Number(limite));
     res.json({
-        msg:'get API - controller',
+        usuarios
     })
 
 }
@@ -54,8 +57,7 @@ const usersPut = async (req,res = response) =>{
     
     const usuariodb =  await Usuario.findByIdAndUpdate(id,resto);
     res.json({
-        msg:'put API - controller',
-        id:id
+        usuariodb
     })
 
 }
