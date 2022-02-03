@@ -1,7 +1,9 @@
 const bcryptjs = require('bcryptjs');
 const {response} = require('express')
 const Usuario = require('../models/usuario');
-const { generarJWT } = require('../helpers/generar-jwt')
+const { generarJWT } = require('../helpers/generar-jwt');
+const { googleVerify } = require('../helpers/google-verify');
+const { json } = require('express/lib/response');
 
 
 
@@ -56,11 +58,47 @@ const login = async (req,res = response) =>{
 
 const googleSingIn = async (req, res = response) =>{
     const{ id_token } = req.body;
-    res.json({
-        msg : 'todo ok',
-        id_token
-    })
 
+
+    try {
+
+        const {correo, name , picture} = await googleVerify( id_token )
+        //console.log(googleUSer)
+        let usuario = await Usuario.findOne({correo})
+        if(!usuario){
+            const data = {
+                nombre :name,
+                correo,
+                password : ' ',
+                img : picture,
+                rol: 'ADMIN_ROLE',
+                google :true
+            }
+            usuario = new Usuario(data)
+            await usuario.save();
+        }
+
+        console.log(usuario)
+        if(!usuario.estado){
+            return res.status(401).json({
+                msg:'hable con el administrador'
+            })
+        }
+
+        //Generar jwt
+        const token = await generarJWT(usuario.id);
+        res.json({
+            usuario,
+            token
+        })
+    
+    } catch (error) {
+        res.status(400).json({
+            ok:false,
+            msg: 'el token no se pudo verificar'
+        })
+    }
+    
 }
 
 
