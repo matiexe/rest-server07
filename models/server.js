@@ -11,7 +11,7 @@ class Server{
         this.paths ={
             auth: '/api/auth',
             categorias: '/api/categorias',
-            usuarios:'.api/users'
+            usuarios:'/api/users'
         }
 
         //Conexion base de datos
