@@ -5,7 +5,7 @@ const { crearCategoria, obtenerCategorias, obtenerCategoria, actualizarCategoria
 const { existeCategoriaId } = require('../helpers/db.validators');
 
 
-const { validarCampos , validarJWT } = require('../middlewares');
+const { validarCampos , validarJWT, esAdminRol } = require('../middlewares');
 
 const router = Router();
 
@@ -35,9 +35,10 @@ router.put('/:id',[
     validarCampos
 ],actualizarCategoria)
 
-//ENDPOINT PARA BORRAR CATEGORIA --- REQUIERE TOKEN
+//ENDPOINT PARA BORRAR CATEGORIA --- REQUIERE TOKEN Y ROL ADMINISTRADOR
 router.delete('/:id',[
     validarJWT,
+    esAdminRol,
     check('id','No es un id valido').isMongoId(),
     check('id').custom(existeCategoriaId),
     validarCampos
