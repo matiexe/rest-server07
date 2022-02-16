@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { crearCategoria, obtenerCategorias, obtenerCategoria } = require('../controllers/categoria');
+const { JWT } = require('google-auth-library');
+const { crearCategoria, obtenerCategorias, obtenerCategoria, actualizarCategoria, eliminarCategoria } = require('../controllers/categoria');
 const { existeCategoriaId } = require('../helpers/db.validators');
 
 
@@ -8,32 +9,37 @@ const { validarCampos , validarJWT } = require('../middlewares');
 
 const router = Router();
 
-//midleware persnaliado id check(id).custom(existeCategoria)
-//obtener todas las categorias -- publico
+//ENDPOINT QUE OBTIENE TODAS LAS CATEGORIAS --- NO REQUIERE TOKEN
 router.get('/',obtenerCategorias)
-//Obtener una categoria especifica --publico
+
+//ENDPOINT QUE MUESTRA CATEGORIA POR ID --- NO  REQUIERE TOKEN
 router.get('/:id',[
 
     check('id','No es un id de mongo valido').isMongoId(),
     check('id').custom(existeCategoriaId),
     validarCampos
-    
-
 ],obtenerCategoria)
-//agregar una categoria -- privado
+
+//ENDPOINT PARA CREAR CATEGORIA --- REQUIERE TOKEN 
 router.post('/',[
     validarJWT,
     check('nombre','El nombre es obligatorio').not().isEmpty(),
     validarCampos
-
 ],crearCategoria)
-//Modificar una categoria --privado
-router.put('/:id',(req,res)=>{
-    res.json('put')
-})
 
-//Eliminar categoria admin
-router.delete('/:id',(req,res)=>{
-    res.json('delete')
-})
+//ENDPOINT DE ACTUALIZACION DE CATEGORIA --- REQUIERE TOKEN
+router.put('/:id',[
+    validarJWT,
+    check('id','No es un id de mongo valido').isMongoId(),
+    check('id').custom(existeCategoriaId),
+    validarCampos
+],actualizarCategoria)
+
+//ENDPOINT PARA BORRAR CATEGORIA --- REQUIERE TOKEN
+router.delete('/:id',[
+    validarJWT,
+    check('id','No es un id valido').isMongoId(),
+    check('id').custom(existeCategoriaId),
+    validarCampos
+],eliminarCategoria)
 module.exports = router;
