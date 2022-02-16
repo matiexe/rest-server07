@@ -1,6 +1,5 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { JWT } = require('google-auth-library');
 const { crearCategoria, obtenerCategorias, obtenerCategoria, actualizarCategoria, eliminarCategoria } = require('../controllers/categoria');
 const { existeCategoriaId } = require('../helpers/db.validators');
 
