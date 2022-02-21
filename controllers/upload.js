@@ -6,15 +6,6 @@ const { Usuario, Producto } = require("../models");
 const cargaDeArchivo = async (req , res = response)=>{
 
 
-    if(!req.files || Object.keys(req.files).length === 0){
-        res.status(400).json({msg:'No hay archivos para subir'});
-        return;
-    }
-    if(!req.files.archivo || Object.keys(req.files).length === 0){
-        res.status(400).json({msg:'No hay archivos para subir'});
-        return;
-    }
-
     try {
 
         const nombre = await subirArchivos(req.files,['png','jpg'],'imagenes')
@@ -24,10 +15,6 @@ const cargaDeArchivo = async (req , res = response)=>{
         res.status(400).json({msg});
     }
     
-
-
-    
-
 }
 
 const actualizarArchivo = async(req, res = response)=>{
@@ -59,11 +46,15 @@ const actualizarArchivo = async(req, res = response)=>{
         default:
             return res.status(500).json({msg:'se me olvido validar esto'});
     }
-
-    const nombre = await subirArchivos(req.files,undefined,coleccion);
-    modelo.img =  nombre;
-    await modelo.save()
-    res.json({modelo})
+    try {
+        const nombre = await subirArchivos(req.files,undefined,coleccion);
+        modelo.img =  nombre;
+        await modelo.save()
+        res.json({modelo})
+    } catch (error) {
+        res.status(500).json({error})
+    }
+    
 }
 module.exports={
     cargaDeArchivo,
