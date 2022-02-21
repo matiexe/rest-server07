@@ -1,5 +1,7 @@
-
+const {path} = require('path')
+const fs = require('fs')
 const { response } = require("express");
+const { model } = require("mongoose");
 const { subirArchivos } = require("../helpers");
 const { Usuario, Producto } = require("../models");
 
@@ -45,6 +47,19 @@ const actualizarArchivo = async(req, res = response)=>{
     
         default:
             return res.status(500).json({msg:'se me olvido validar esto'});
+    }
+
+    // Limpiar imagenes previas
+
+    try {
+        if(model.img){
+            const pathImagen =  path.join( __dirname,'../uploads,',coleccion,model.img);
+            if(fs.existsSync(pathImagen)){
+                fs.unlinkSync(pathImagen)
+            }
+        }
+    } catch (error) {
+        console.log(error)
     }
     try {
         const nombre = await subirArchivos(req.files,undefined,coleccion);
